@@ -1,6 +1,5 @@
 package com.app_labs.builditbigger;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,7 +34,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                new EndpointsAsyncTask().execute();
+                EndpointsAsyncTask task = new EndpointsAsyncTask();
+                task.setListener(new EndPointsGetTaskListener() {
+                    @Override
+                    public void onComplete(String jokeString, Exception e) {
+                        callsToJokeDisplayLibrary(jokeString);
+                    }
+                }).execute();
 
             }
         });
@@ -71,9 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
+    public static class EndpointsAsyncTask extends AsyncTask<Void, Void, String> {
         private MyApi myApiService = null;
-        private Context context;
+        private EndPointsGetTaskListener mListener = null;
+        private Exception mError = null;
 
         @Override
         protected String doInBackground(Void... params) {
@@ -98,16 +104,41 @@ public class MainActivity extends AppCompatActivity {
             try {
                 return myApiService.tellJoke().execute().getData();
             } catch (IOException e) {
+                mError = e;
                 return e.getMessage();
             }
         }
 
+        /**
+         * Using the listener pattern to help testing
+         *
+         * @param listener we use this to call onComplete
+         * @return listener
+         */
+        public EndpointsAsyncTask setListener(EndPointsGetTaskListener listener) {
+            this.mListener = listener;
+            return this;
+        }
+
         @Override
         protected void onPostExecute(String result) {
-//            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-
-            callsToJokeDisplayLibrary(result);
+            if (this.mListener != null) {
+                this.mListener.onComplete(result, mError);
+            }
         }
+
+        @Override
+        protected void onCancelled() {
+            if (this.mListener != null) {
+                mError = new InterruptedException("AsyncTask cancelled");
+                this.mListener.onComplete(null, mError);
+            }
+        }
+
+    }
+
+    public static interface EndPointsGetTaskListener {
+        public void onComplete(String jokeString, Exception e);
     }
 
 }
