@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.app_labs.backend.myApi.MyApi;
 import com.app_labs.jokedisplaylibrary.JokeActivity;
@@ -22,11 +23,16 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.GONE);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void callsToJokeDisplayLibrary(String joke) {
-        Intent intent = new Intent(MainActivity.this, JokeActivity.class);
+        Intent intent = new Intent(this, AdsActivity.class);
         intent.putExtra(JokeActivity.EXTRA_JOKE, joke);
 
         startActivity(intent);
@@ -81,6 +87,14 @@ public class MainActivity extends AppCompatActivity {
         private MyApi myApiService = null;
         private EndPointsGetTaskListener mListener = null;
         private Exception mError = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (mProgressBar != null) {
+                mProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
 
         @Override
         protected String doInBackground(Void... params) {
@@ -123,8 +137,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            if (mProgressBar != null) {
+                mProgressBar.setVisibility(View.GONE);
+            }
             if (this.mListener != null) {
-                this.mListener.onComplete("FREE JOKE", mError);
+                this.mListener.onComplete(result, mError);
             }
         }
 
