@@ -1,5 +1,6 @@
 package com.app_labs.builditbigger;
 
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            if(myApiService == null) {  // Only do this once
+            if (myApiService == null) {  // Only do this once
                 MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                         new AndroidJsonFactory(), null)
                         // options for running against local devappserver
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if (this.mListener != null) {
-                this.mListener.onComplete(result, mError);
+                this.mListener.onComplete("FREE JOKE", mError);
             }
         }
 
@@ -142,4 +143,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
