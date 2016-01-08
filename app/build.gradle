@@ -36,3 +36,18 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
 }
+
+
+task startBackendAndTest(dependsOn: [":backend:appengineRun", ":app:connectedCheck", ":backend:appengineStop"]) {
+    connectedCheck.mustRunAfter ':backend:appengineRun'
+    evaluationDependsOn(":backend")
+    project(":backend") {
+        appengine {
+            daemon true
+        }
+    }
+    doLast {
+        println "all good"
+    }
+
+}
