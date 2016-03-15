@@ -9,7 +9,7 @@ Just open it in Android Studio
 
 # Tests
 
-There is an special function that starts the Local backend and runs the tests, it can be called with 
+There is an special function that starts the Local backend and runs the tests:
 ```
 task startBackendAndTest(dependsOn: [":backend:appengineRun", ":app:connectedCheck", ":backend:appengineStop"]) {
     connectedCheck.mustRunAfter ':backend:appengineRun'
