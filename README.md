@@ -1,7 +1,7 @@
 # BuildItBigger
 Android Nanodedegree 4th project
 
-This is a joke telling app and focuses heavily on **Gradle**, it factores the functionality into libraries and flavors to keep the build simple. You'll also configure a Google Cloud Endpoints development server to supply the jokes.
+This is a joke telling app and focuses heavily on **Gradle**, it factores the functionality into libraries and flavors to keep the build simple. Also uses a Google Cloud Endpoints development server to supply the jokes.
 
 # Install
 
